@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <title>Document</title>
+</head>
+
+<body>
+
+    <!-- __________________________ -->
+
+    <div class="container">
+        <div class="row">
+            <h3 class="text-primary  fw-bold my-3">THÊM HỌC PHẦN</h5>
+
+        </div>
+        <form>
+            <div class="mb-3 row">
+                <div class="col d-flex">
+                    <label for="staticEmail" class="col-md-2 col-form-label">Học phần</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="name">
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <div class="col d-flex">
+                    <label for="inputPassword" class="col-md-2 col-form-label">Giảng viên</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="teacher">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <div class="col text-center me-5">
+                    <button type="button" class="create btn btn-primary me-5">Khởi tạo</button>
+                    <button type="button" style="display:none" class="fix btn btn-primary me-5">Sửa</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <!-- __________________________________________________ -->
+
+    <div class="main container my-5">
+        <h3 class="text-danger text-center fw-bold my-5">DANH SÁCH HỌC PHẦN</h5>
+            <table id="dtBasicExample" class="table table-striped" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Học phần</th>
+                        <th scope="col">Giảng Viên</th>
+
+                        <th scope="col">Note</th>
+
+                    </tr>
+                </thead>
+                <tbody id="content">
+
+                </tbody>
+            </table>
+    </div>
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script>
+        // _________________________
+
+        // var objects = [{
+        //     name: 'Cơ sở dữ liệu',
+        //     teacher: 'Thảo Trần'
+        // }, {
+        //     name: 'Javascript & jquery',
+        //     teacher: 'Châu Dung'
+        // }, {
+        //     name: 'Thiết kế web',
+        //     teacher: 'Ngọc Duy'
+        // }, ];
+        // var objects = [];
+
+        localStorage.setItem('arr', '[]')
+
+        var arr = JSON.parse(localStorage.getItem('arr'))
+        renderObject();
+        CreateObject()
+
+
+        function CreateObject() {
+            var createBtn = document.querySelector('.create')
+
+            createBtn.onclick = function() {
+                var name = document.querySelector('input[name="name"]').value
+                var teacher = document.querySelector('input[name="teacher"]').value
+
+                if (name == '' || teacher == '') {
+                    alert('Vui lòng nhập số liệu')
+                } else {
+                    var formData = {
+                        name: name,
+                        teacher: teacher,
+                    }
+                    arr.push(formData)
+                    localStorage.setItem('arr', JSON.stringify(arr))
+
+                    renderObject()
+                    document.querySelector('input[name="name"]').value = '';
+                    document.querySelector('input[name="teacher"]').value = ''
+                }
+
+            }
+        };
+
+
+        function deleteObject(index) {
+
+            arr.splice(index, 1)
+            localStorage.setItem('arr', JSON.stringify(arr))
+            renderObject()
+
+            // var objectItem = document.querySelector('.object-item-' + index)
+            // if (objectItem) {
+            //     objectItem.parentNode.removeChild(objectItem);
+            // }
+
+        };
+
+
+
+        function handlefixObject(index) {
+            document.querySelector('.create').style.display = 'none';
+            document.querySelector('.fix').style.display = 'inline-block';
+
+            if (document.querySelector('.list-object.bg-warning')) {
+                document.querySelector('.list-object.bg-warning').classList.remove('bg-warning');
+
+            }
+            document.querySelector('.object-item-' + index).classList.add('bg-warning');
+            document.querySelector('input[name="name"]').value = document.querySelector('.object-name-' + index).innerHTML;
+            document.querySelector('input[name="teacher"]').value = document.querySelector('.object-teacher-' + index).innerHTML;
+            document.querySelector('input[name="name"]').focus();
+
+
+            document.querySelector('.fix').onclick = function() {
+
+                var data = {
+                    name: document.querySelector('input[name="name"]').value,
+                    teacher: document.querySelector('input[name="teacher"]').value
+                }
+
+
+                arr.splice(index, 1, data);
+                localStorage.setItem('arr', JSON.stringify(arr))
+
+                renderObject()
+
+
+                document.querySelector('.create').style.display = 'inline-block';
+                document.querySelector('.fix').style.display = 'none';
+                document.querySelector('.object-item-' + index).classList.remove('bg-warning');
+                document.querySelector('input[name="name"]').value = ''
+                document.querySelector('input[name="teacher"]').value = ''
+
+
+            }
+
+        };
+
+        function renderObject() {
+
+            var content = document.getElementById('content');
+            var htmls = arr.map(function(arrr, index) {
+                return `
+                        <tr class="list-object object-item-${index}">
+                        <th scope="row">${index + 1}</th>
+                        <td class="object-name-${index}">${arrr.name}</td>
+                        <td class="object-teacher-${index}">${arrr.teacher}</td>
+                        <td scope="col">
+                                <div onclick="handlefixObject(${index})" class="btn-group" role="group">
+                                    <button type="button" class="btn btn-info">Sửa</button>
+                                </div>
+                                <div onclick="deleteObject(${index})" class="btn-group" role="group">
+                                    <button type="button" class="btn btn-danger">Xóa</button>
+                            </div>
+                        </td>
+                        </tr>
+                        `
+            });
+            content.innerHTML = htmls.join('')
+
+        }
+    </script>
+</body>
+
+</html>
